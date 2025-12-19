@@ -10,22 +10,22 @@ export function getMcpServer() {
     version: '1.0.0',
   });
   for (const tool of tools) {
-    createMcpTool(server, tool);
+    createMcpTool(server, tool as ToolOptions);
   }
   return server;
 }
 
+// Tool options type - simplified to avoid complex type inference
+type ToolOptions = {
+  name: string;
+  description: string;
+  schema?: z.ZodObject<any>;
+  handler: (args: any) => Promise<string>;
+};
+
 // Helper that wraps MCP tool creation
 // It handles arguments typing, error handling and response formatting
-export function createMcpTool<T extends z.ZodTypeAny>(
-  server: McpServer,
-  options: {
-    name: string;
-    description: string;
-    schema?: z.ZodObject<z.ZodRawShape, any, T>;
-    handler: (args: z.infer<z.ZodObject<z.ZodRawShape, any, T>>) => Promise<string>;
-  },
-) {
+export function createMcpTool(server: McpServer, options: ToolOptions) {
   if (!options.schema) {
     server.tool(options.name, options.description, async () => {
       try {
@@ -34,7 +34,7 @@ export function createMcpTool<T extends z.ZodTypeAny>(
         return {
           content: [
             {
-              type: 'text',
+              type: 'text' as const,
               text: result,
             },
           ],
@@ -45,7 +45,7 @@ export function createMcpTool<T extends z.ZodTypeAny>(
         return {
           content: [
             {
-              type: 'text',
+              type: 'text' as const,
               text: `Error: ${errorMessage}`,
             },
           ],
@@ -54,7 +54,7 @@ export function createMcpTool<T extends z.ZodTypeAny>(
       }
     });
   } else {
-    server.tool(options.name, options.description, options.schema.shape, async (args: z.ZodRawShape) => {
+    server.tool(options.name, options.description, options.schema.shape as any, async (args: any) => {
       try {
         // console.log("Executing MCP tool:", toolArguments.name);
         // console.log("Tool arguments:", args);
@@ -62,7 +62,7 @@ export function createMcpTool<T extends z.ZodTypeAny>(
         return {
           content: [
             {
-              type: 'text',
+              type: 'text' as const,
               text: result,
             },
           ],
@@ -73,7 +73,7 @@ export function createMcpTool<T extends z.ZodTypeAny>(
         return {
           content: [
             {
-              type: 'text',
+              type: 'text' as const,
               text: `Error: ${errorMessage}`,
             },
           ],
