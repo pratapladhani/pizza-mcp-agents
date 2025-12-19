@@ -5,5 +5,13 @@
   "workbench.colorCustomizations": {
     "statusBar.background": "#8f0000",
     "statusBar.foreground": "#ffffff"
-  }
+  },
+  "azureFunctions.projectSubpath": "src/pizza-api",
+  "azureFunctions.deploySubpath": "src/pizza-api",
+  "azureFunctions.postDeployTask": "npm install (functions)",
+  "azureFunctions.projectLanguage": "TypeScript",
+  "azureFunctions.projectRuntime": "~4",
+  "debug.internalConsoleOptions": "neverOpen",
+  "azureFunctions.projectLanguageModel": 4,
+  "azureFunctions.preDeployTask": "npm prune (functions)"
 }
